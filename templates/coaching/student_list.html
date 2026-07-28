@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Students - Coaching Management System{% endblock %}
+
+{% block content %}
+<div class="page-header page-header-flex">
+    <div>
+        <h1>Students</h1>
+        <p class="page-subtitle">Manage all enrolled students</p>
+    </div>
+    <a href="{% url 'student_add' %}" class="btn btn-primary">+ Add Student</a>
+</div>
+
+<form method="get" class="search-bar">
+    {{ search_form.q }}
+    <button type="submit" class="btn btn-secondary">Search</button>
+</form>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Course</th>
+                    <th>Batch</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>
+                        {% if student.photo %}
+                        <img src="{{ student.photo.url }}" alt="{{ student.name }}" class="table-avatar">
+                        {% else %}
+                        <span class="table-avatar-placeholder">{{ student.name|slice:":1" }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.phone }}</td>
+                    <td>{{ student.course|default:"—" }}</td>
+                    <td>{{ student.batch|default:"—" }}</td>
+                    <td><span class="badge badge-{{ student.status }}">{{ student.get_status_display }}</span></td>
+                    <td class="actions-cell">
+                        <a href="{% url 'student_edit' student.pk %}" class="btn btn-small btn-edit">Edit</a>
+                        <a href="{% url 'student_delete' student.pk %}" class="btn btn-small btn-delete">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="empty-text">No students found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">« Prev</a>
+        {% endif %}
+        <span class="page-current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next »</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

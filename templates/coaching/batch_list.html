@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Batches - Coaching Management System{% endblock %}
+
+{% block content %}
+<div class="page-header page-header-flex">
+    <div>
+        <h1>Batches</h1>
+        <p class="page-subtitle">Manage batches for each course</p>
+    </div>
+    <a href="{% url 'batch_add' %}" class="btn btn-primary">+ Add Batch</a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr><th>Name</th><th>Course</th><th>Teacher</th><th>Timing</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for batch in batches %}
+                <tr>
+                    <td>{{ batch.name }}</td>
+                    <td>{{ batch.course }}</td>
+                    <td>{{ batch.teacher|default:"—" }}</td>
+                    <td>{{ batch.timing }}</td>
+                    <td class="actions-cell">
+                        <a href="{% url 'batch_edit' batch.pk %}" class="btn btn-small btn-edit">Edit</a>
+                        <a href="{% url 'batch_delete' batch.pk %}" class="btn btn-small btn-delete">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="empty-text">No batches found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">« Prev</a>{% endif %}
+        <span class="page-current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">Next »</a>{% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Teachers - Coaching Management System{% endblock %}
+
+{% block content %}
+<div class="page-header page-header-flex">
+    <div>
+        <h1>Teachers</h1>
+        <p class="page-subtitle">Manage teaching staff</p>
+    </div>
+    <a href="{% url 'teacher_add' %}" class="btn btn-primary">+ Add Teacher</a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th><th>Email</th><th>Phone</th><th>Subject</th><th>Qualification</th><th>Joined</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for teacher in teachers %}
+                <tr>
+                    <td>{{ teacher.name }}</td>
+                    <td>{{ teacher.email }}</td>
+                    <td>{{ teacher.phone }}</td>
+                    <td>{{ teacher.subject }}</td>
+                    <td>{{ teacher.qualification }}</td>
+                    <td>{{ teacher.joining_date }}</td>
+                    <td class="actions-cell">
+                        <a href="{% url 'teacher_edit' teacher.pk %}" class="btn btn-small btn-edit">Edit</a>
+                        <a href="{% url 'teacher_delete' teacher.pk %}" class="btn btn-small btn-delete">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="empty-text">No teachers found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">« Prev</a>{% endif %}
+        <span class="page-current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">Next »</a>{% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

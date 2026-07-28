@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Courses - Coaching Management System{% endblock %}
+
+{% block content %}
+<div class="page-header page-header-flex">
+    <div>
+        <h1>Courses</h1>
+        <p class="page-subtitle">Manage available courses</p>
+    </div>
+    <a href="{% url 'course_add' %}" class="btn btn-primary">+ Add Course</a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr><th>Name</th><th>Duration</th><th>Fee</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ course.name }}</td>
+                    <td>{{ course.duration }}</td>
+                    <td>₹{{ course.fee }}</td>
+                    <td class="actions-cell">
+                        <a href="{% url 'course_edit' course.pk %}" class="btn btn-small btn-edit">Edit</a>
+                        <a href="{% url 'course_delete' course.pk %}" class="btn btn-small btn-delete">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="empty-text">No courses found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">« Prev</a>{% endif %}
+        <span class="page-current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">Next »</a>{% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
